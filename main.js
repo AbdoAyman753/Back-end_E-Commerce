@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const errorHandler = require("express-async-error").Handler;
+require("dotenv").config();
 // DB connection
 require("./db");
 //Requiring Routes
