@@ -21,9 +21,25 @@ const userSchema = new Schema({
   },
   role: {
     type: String,
-    enum: ["user", "admin", "super-admin"],
+    enum: ["user", "admin"],
     default: "user",
   },
+  profile_pic:{
+    type: String
+  },
+  balance:{
+    type: Number,
+    default: 0
+  },
+  // library:[{
+  //   type: mongoose.Schema.Types.ObjectId, ref:'Product'
+  // }],
+  // wish_list:[{
+  //   type: mongoose.Schema.Types.ObjectId, ref:'Product'
+  // }],
+  // cart:[{
+  //   type: mongoose.Schema.Types.ObjectId, ref:'Product'
+  // }],
   created_at: {
     type: Date,
     default: Date.now(),
@@ -35,7 +51,7 @@ userSchema.pre("save", async function () {
   // hashing password only when changed,
   //  because this pre middlware will be executed when updating also.
   if (this.isModified("password")) {
-    const hashedPassword = await bcrypt.hash(this.password, 10);
+    const hashedPassword = await bcrypt.hash(this.password, process.env.HASHING_COST);
     this.password = hashedPassword;
   }
 });
