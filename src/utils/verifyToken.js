@@ -1,16 +1,16 @@
-const AppError = require("./AppError");
-const jwt = require("jsonwebtoken");
+const AppError = require('./AppError');
+const jwt = require('jsonwebtoken');
 
 const verifyToken = async (req, res, next) => {
   // checking if there is a token provided
   const token = req.headers.authorization;
   if (!token)
     return next(
-      new AppError("No token provided, please provide a token!", 400)
+      new AppError('No token provided, please provide a token!', 400)
     );
 
   // destructuring id from the payload
-  const { id } = jwt.verify(token, "mysecret");
+  const { id, role } = jwt.verify(token, 'mysecret');
 
   // logged in user
   // const user = await User.findById(id);
