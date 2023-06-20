@@ -10,13 +10,13 @@ const verifyToken = async (req, res, next) => {
     );
 
   // destructuring id from the payload
-  const { id } = jwt.verify(token, "mysecret");
+  const { id } = jwt.verify(token, process.env.ENCRYPTION_KEY);
 
   // logged in user
-  // const user = await User.findById(id);
-  // if (!user) return next(new AppError("User Not Found!", 400)); // This check is not necessary
+  const user = await User.findById(id);
+  if (!user) return next(new AppError("User Not Found!", 400)); // This check is not necessary
 
-  // req.user = user;
+  req.user = user;
   next();
 };
 
