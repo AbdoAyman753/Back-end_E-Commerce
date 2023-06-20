@@ -2,10 +2,13 @@ const express = require("express");
 const app = express();
 const errorHandler = require("express-async-error").Handler;
 require("dotenv").config();
+
 // DB connection
 require("./db");
 //Requiring Routes
 // const usersRouter = require("./src/routes/usersRoutes");
+const orderRouter=require('./src/routes/orderRoutes');
+
 
 
 // parsing incoming requests
@@ -16,6 +19,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(errorHandler());
 
 // Routes
+
+//Order Router
+app.use('/orders',orderRouter)
 // app.use("/users", usersRouter);
 
 
