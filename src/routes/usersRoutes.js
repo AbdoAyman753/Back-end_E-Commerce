@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 
 const verifyToken = require("../utils/verifyToken"); // logged in users, admins, or super admins
-const verifyAdminRole = require("../utils/verifyAdminRole"); // admins & super admins
-const canUpdateRole = require("../utils/verifySuper"); // only super admins
-const canUpdateProfile = require("../utils/canUpdateProfile"); // only you or a super-admin can update your profile info
+const canEditUser = require("../utils/user/canEditUser");
+const isAdmin = require("../utils/isAdmin");
+
 
 const {
   getAllUsers,
@@ -13,7 +13,7 @@ const {
   updateUser,
   deleteUser,
   login,
-} = require("../controllers/authenticationController");
+} = require("../controllers/userController");
 
 // getting all users
 router.get("/", verifyToken, getAllUsers);
@@ -25,10 +25,10 @@ router.get("/:id", verifyToken, getUserById);
 router.post("/", register);
 
 // update user
-router.patch("/:id", verifyToken, updateUser);
+router.patch("/:id", verifyToken, canEditUser, updateUser);
 
 // delete user
-router.delete("/:id", verifyToken, deleteUser);
+router.delete("/:id", verifyToken, isAdmin, deleteUser);
 
 // login
 router.post("/login", login);
