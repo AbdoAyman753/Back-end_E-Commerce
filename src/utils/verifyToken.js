@@ -10,7 +10,7 @@ const verifyToken = async (req, res, next) => {
     );
 
   // destructuring id from the payload
-  const { id } = jwt.verify(token, process.env.ENCRYPTION_KEY);
+  const { id, role } = jwt.verify(token, process.env.ENCRYPTION_KEY);
 
   // logged in user
   const user = await User.findById(id);
