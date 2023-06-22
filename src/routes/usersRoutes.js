@@ -21,14 +21,16 @@ const {
   login,
 } = require("../controllers/userController");
 
+const { validateReg, validateLogin } = require("../utils/validation");
+
 // getting all users
-router.get("/", verifyToken, getAllUsers);
+router.get("/", verifyToken,getAllUsers);
 
 // getting user by id
 router.get("/:id", verifyToken, getUserById);
 
 // create a new user (register)
-router.post("/", register);
+router.post("/", validateReg, register);
 
 // update user
 router.patch("/:id", verifyToken, canEditUser, updateUser);
@@ -41,6 +43,6 @@ router.patch("/changeRole", verifyToken, isAdmin, updateRole);
 router.delete("/:id", verifyToken, isAdmin, deleteUser);
 
 // login
-router.post("/login", login);
+router.post("/login", validateLogin, login);
 
 module.exports = router;
