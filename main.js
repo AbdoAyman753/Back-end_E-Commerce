@@ -5,8 +5,9 @@ require("dotenv").config();
 
 // DB connection
 require("./db");
+
 //Requiring Routes
-// const usersRouter = require("./src/routes/usersRoutes");
+const usersRouter = require("./src/routes/usersRoutes");
 const orderRouter=require('./src/routes/orderRoutes');
 
 
@@ -19,10 +20,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(errorHandler());
 
 // Routes
-
-//Order Router
+app.use("/users", usersRouter);
 app.use('/orders',orderRouter)
-// app.use("/users", usersRouter);
 
 
 app.use((req, res, next) => {
