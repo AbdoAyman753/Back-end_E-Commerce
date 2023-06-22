@@ -1,4 +1,5 @@
 const AppError = require("./AppError");
+const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 
 const verifyToken = async (req, res, next) => {
@@ -6,7 +7,7 @@ const verifyToken = async (req, res, next) => {
   const token = req.headers.authorization;
   if (!token)
     return next(
-      new AppError("No token provided, please provide a token!", 400)
+      new AppError("No token provided, Access Denied!", 403)
     );
 
   // destructuring id from the payload
@@ -14,7 +15,7 @@ const verifyToken = async (req, res, next) => {
 
   // logged in user
   const user = await User.findById(id);
-  if (!user) return next(new AppError("User Not Found!", 400)); // This check is not necessary
+  if (!user) return next(new AppError("User Not Found!", 404)); // This check is not necessary
 
   req.user = user;
   next();
