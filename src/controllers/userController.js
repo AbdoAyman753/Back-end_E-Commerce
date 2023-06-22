@@ -3,6 +3,7 @@ const AppError = require("../utils/AppError");
 
 const jwt = require("jsonwebtoken");
 
+const { multerUploads, dataUri } = require("../utils/multer");
 const { uploader } = require("../utils/config/cloudinaryConfig");
 
 const getAllUsers = async (req, res, next) => {
@@ -18,9 +19,9 @@ const getUserById = async (req, res, next) => {
 };
 
 const register = async (req, res, next) => {
-	const { username, email, password } = req.body;
+	const { user_name, email, password } = req.body;
 	const createdUser = await User.create({
-		user_name: username,
+		user_name,
 		email,
 		password,
 	});
@@ -32,16 +33,18 @@ const updateUser = async (req, res, next) => {
 	const user = await User.findById(id);
 	if (!user) return next(new AppError("User Not Found", 404));
 
-	const { user_name, email, password, role, profile_pic, balance } = req.body;
+	let { user_name, email, password, role, balance } = req.body;
+	if(balance){
+		balance = +balance + +user.balance;
+	}
 
 	const editedUser = await User.findByIdAndUpdate(id, {
 		user_name,
 		email,
 		password,
 		role,
-		profile_pic,
 		balance,
-	});
+	},{new:true});
 	res.send({ message: "user updated successfully!", editedUser });
 };
 
@@ -51,28 +54,28 @@ const uploadUserPic = async (req, res, next) => {
 	if (!user) return next(new AppError("User Not Found", 404));
 
 	if (req.file) {
-		const file = dataUri(req).content;
-		return uploader
-			.upload(file)
-			.then(async (result) => {
-				const image = result.url;
-				await User.findByIdAndUpdate(id, { profile_pic:image });
-				return res.status(200).json({
-					messge: "Your image has been uploded successfully to cloudinary",
-					data: {
-						image,
-					},
-				});
-			})
-			.catch((err) =>
-				res.status(400).json({
-					messge: "someting went wrong while processing your request",
-					data: {
-						err,
-					},
-				})
-			);
+		const file = dataUri(req);
+		const profile_pic = await uploader.upload(file.content , { public_id: req.file.originalname , folder:"profile_pics"});
+		const updatedUser = await User.findByIdAndUpdate(id, { profile_pic:profile_pic.url }, {new:true});
+		res.send({
+			messge: "Your image has been uploded successfully to cloudinary",
+			updatedUser
+		});
 	}
+	else{
+		res.status(404).send({
+			messge: "No Image Found"
+		});
+	}
+	
+};
+
+const updateRole = async (req, res, next) => {
+	const  admin  = req.user;
+	let { user_id,  role } = req.body;
+	
+	const editedUser = await User.findByIdAndUpdate(user_id, {role},{new:true});
+	res.send({ message: "user Role updated successfully!", editedUser });
 };
 
 const deleteUser = async (req, res, next) => {
@@ -111,6 +114,7 @@ module.exports = {
 	register,
 	updateUser,
 	uploadUserPic,
+	updateRole,
 	deleteUser,
 	login,
 };
