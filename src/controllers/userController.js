@@ -20,12 +20,15 @@ const getUserById = async (req, res, next) => {
 
 const register = async (req, res, next) => {
 	const { user_name, email, password } = req.body;
+	if(await User.findOne({ email})){
+		res.status(409).send({message: "This Email already registered"});
+	}
 	const createdUser = await User.create({
 		user_name,
 		email,
 		password,
 	});
-	res.send({ message: "user created successfully!", user: createdUser });
+	res.send({ message: "User created successfully!", user: createdUser });
 };
 
 const updateUser = async (req, res, next) => {
