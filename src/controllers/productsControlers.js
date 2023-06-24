@@ -1,8 +1,6 @@
 const Product = require('../models/Product');
 const AppError = require('../utils/AppError');
 
-// const jwt = require('jsonwebtoken');
-
 const getAllProducts = async (req, res, next) => {
   const Products = await Product.find();
   res.send(Products);
@@ -34,9 +32,8 @@ const createProduct = async (req, res, next) => {
   });
 };
 
+// The Logic Below Is Designed For The Patch HTTP Method Only.
 const updateProduct = async (req, res, next) => {
-  // if (userRole == admin) {
-
   const product_id = req.params.id;
   const {
     product_name,
@@ -52,27 +49,16 @@ const updateProduct = async (req, res, next) => {
   if (!product)
     return next(new AppError('Product With The Provided Id Not Found 🤷‍♀️', 400));
 
-  const updates = {};
-
-  updates.Product_name = product_name ? product_name : Product.Product_name;
-
-  updates.imgs_links = imgs_links ? imgs_links : Product.imgs_links;
-
-  updates.price = price ? price : Product.price;
-
-  updates.vendor = vendor ? vendor : Product.vendor;
-
-  updates.category = category ? category : Product.category;
-
-  updates.description = description ? description : Product.description;
-
-  updates.reviews = reviews ? reviews : Product.reviews;
-
-  const editedProduct = await Product.findByIdAndUpdate(product_id, updates);
+  const editedProduct = await Product.findByIdAndUpdate(product_id, {
+    product_name,
+    imgs_links,
+    price,
+    vendor,
+    category,
+    description,
+    reviews,
+  });
   res.send({ message: 'Product updated successfully!', editedProduct });
-  // } else {
-  // res.send('You Are Not authorized');
-  // }
 };
 
 const deleteProduct = async (req, res, next) => {
