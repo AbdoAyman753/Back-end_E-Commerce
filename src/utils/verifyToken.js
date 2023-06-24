@@ -1,6 +1,7 @@
 const AppError = require('./AppError');
 const jwt = require('jsonwebtoken');
 
+// verify req have token and based on token asingn the user to the req
 const verifyToken = async (req, res, next) => {
   // checking if there is a token provided
   const token = req.headers.authorization;
@@ -14,7 +15,7 @@ const verifyToken = async (req, res, next) => {
 
   // logged in user
   const user = await User.findById(id);
-  if (!user) return next(new AppError("User Not Found!", 400)); // This check is not necessary
+  if (!user) return next(new AppError('User Not Found!', 400)); // This check is not necessary
 
   req.user = user;
   next();
