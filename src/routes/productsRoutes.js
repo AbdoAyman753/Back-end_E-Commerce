@@ -12,7 +12,7 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
-} = require('../controllers/productsControlers');
+} = require('../controllers/productsControllers');
 
 // get all Products
 router.get('/', getAllProducts);
