@@ -4,12 +4,14 @@ const errorHandler = require('express-async-error').Handler;
 require('dotenv').config();
 
 // DB connection
-require('./db');
+require("./db");
 
 //Requiring Routes
-// const usersRouter = require("./src/routes/usersRoutes");
+const usersRouter = require("./src/routes/usersRoutes");
+const orderRouter=require('./src/routes/orderRoutes');
 const productRouter = require('./src/routes/productsRoutes');
-const orderRouter = require('./src/routes/orderRoutes');
+
+
 
 // parsing incoming requests
 app.use(express.json());
@@ -19,11 +21,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(errorHandler());
 
 // Routes
+app.use("/users", usersRouter);
+app.use('/orders',orderRouter)
+app.use('/product', productRouter);
 
-//Order Router
-app.use('/orders', orderRouter);
-// app.use("/users", usersRouter);
-app.use('product', productRouter);
 
 app.use((req, res, next) => {
   res.send("<h1 style='text-align:center'>Hello World</h1>");
