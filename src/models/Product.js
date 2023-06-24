@@ -8,11 +8,11 @@ const productSchema = new Schema({
     type: String,
     required: true,
   },
-  // imgs_links: [
-  //   {
-  //     type: String,
-  //   },
-  // ],
+  imgs_links: [
+    {
+      type: String,
+    },
+  ],
   price: {
     type: Number,
     required: true,
