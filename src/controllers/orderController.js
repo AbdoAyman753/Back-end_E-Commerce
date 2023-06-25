@@ -1,18 +1,25 @@
+
 const express=require('express');
 const Order=require('../models/Order');
 const AppError= require('../utils/AppError');
 
 
 // Id Check Middleware
- const checkId= async (req,res,next,val)=>{
-    const order= await Order.findById(val);
-    if(!order) return next(new AppError(`No Order Found With id=${val}`,404)) ;
-    req.order=order;
-    next();
+ const checkId= async (req,res,next)=>{
+    const order= await Order.findById(req.params.id);
+    if(!order) return next(new AppError(`No Order Found With id=${req.params.id}`,404));
+    if(req.user.role==='admin'||req.user._id.toString() === library.user._id.toString()){
+         req.order=order;
+         next();
+    }else{
+        return next(new AppError("You Aren't Authorized To access this Order",401))
+   }
+
+    
 }
 
 // Get all Orders
-const getAllOrders= async (req,res,next,err)=>{
+const getAllOrders= async (req,res,err)=>{
     const orders= await Order.find();
     if(!orders) return next(new AppError(`No Orders exists`, 404))
     res.status(200).send(orders)

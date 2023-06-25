@@ -7,14 +7,14 @@ const AppError = require("../utils/AppError");
 
 
 
-const checkId=async (req,res,next,val)=>{
-    const library= await Library.findById(val);
-    if(!library) return (new AppError(`No purchase History with This Id ${val}`,404));
-    if(req.user.role==='admin'||req.user._id === library.user._id){
+const checkId=async (req,res,next)=>{
+    const library= await Library.findById(req.params.id);
+    if(!library) return next(new AppError(`No purchase History with This Id ${req.params.id}`,404));
+    if(req.user.role==='admin'||req.user._id.toString() === library.user._id.toString()){
         req.library=library;
         next()
     }else{
-         return(new AppError("You Aren't Authorized To access this purchase History",401))
+         return next(new AppError("You Aren't Authorized To access this purchase History",401))
     }
 }
 
@@ -55,6 +55,15 @@ const updateLibrary=async(req,res,next)=>{
 
 }
 
+const updateUserLibrary= async(req,res)=>{
+    const{products}=req.body;
+    const newLibrary = await Library.findById({user:req.user._id})
+    newLibrary.products.push(...products);
+    await Library.findByIdAndUpdate(newLibrary._id,{products:newLibrary.products})
+    res.status(201).send(`The Purchase LIst With Id ${req.library._id} Has Been updated`)
+
+}
+
 const deleteLibrary=async (req,res)=>{
     await Library.findByIdAndDelete(req.library._id);
     res.status(200).send(`LIbrary with Id=${req.library._id} has been deleted Successfully`)
@@ -70,4 +79,4 @@ const getUserLibrary=async(req,res)=>{
 
 
 
-module.exports={checkId,getOneLibrary,getUserLibrary,createLibrary,updateLibrary,deleteLibrary}
+module.exports={checkId,getOneLibrary,getUserLibrary,createLibrary,updateLibrary,deleteLibrary,updateUserLibrary}

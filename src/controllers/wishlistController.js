@@ -1,18 +1,22 @@
 const express=require('express')
 const Wishlist=require('../models/Wishlist');
 const AppError = require('../utils/AppError');
+const verifyToken = require('../utils/verifyToken');
 
 
 
 
-const checkId=async (req,res,next,val)=>{
-    const Wishlist= await Wishlist.findById(val);
-    if(!library) return (new AppErrorError(`No purchase History with This Id ${val}`,404));
-    if(req.user.role==='admin'||req.user._id === library.user._id){
+const checkId=async (req,res,next)=>{
+    const wishlist= await Wishlist.findById(req.params.id);
+    console.log(wishlist);
+    if(!wishlist) return next(new AppErrorError(`No purchase History with This Id ${req.params.id}`,404));
+    console.log(wishlist.user);
+    console.log(req.user._id == wishlist.user)
+    if(req.user.role==='admin'||req.user._id.toString() == wishlist.user.toString()){
         req.wishlist=wishlist;
         next()
     }else{
-         return(new AppError("You Aren't Authorized To access this purchase History",401))
+         return next(new AppError("You Aren't Authorized To access this purchase History",401))
     }
 }
 
@@ -25,28 +29,29 @@ const getUserWishlist=async(req,res)=>{
 }
 
 const getOnewishlist=async(req,res)=>{
-
-    res.status(200).send(req.wishlist);
+    const wishlist= await Wishlist.findById(req.params.id)
+    res.status(200).send(wishlist);
 }
 
 const  updateWishlist=async(req,res,next)=>{
-        const { product } = req.body;
-        if (!product) return next(new AppError("No Updates Values Found", 404));
-
-        const wishlist = await Wishlist.findById(req.wishlist._id);
-        wishlist.products.push(product);
-
-        await Wishlist.findByIdAndUpdate(req.wishlist._id, { products: wishlist.products });
+        const { products } = req.body;
+        if (!products) return next(new AppError("No Updates Values Found", 404));
+        const wishlist= await Wishlist.findOne({user:req.user._id});
+        console.log(wishlist);
+        // const wishlist = await Wishlist.findById(req.wishlist._id);
+        wishlist.products.push(...products);
+        await Wishlist.findByIdAndUpdate(wishlist._id, { products: wishlist.products });
         res.status(201).send(
-            `Wishlist With Id ${req.wishlist._id} Has Been updated`
+            `Wishlist With Id ${wishlist._id} Has Been updated`
         );
     
 
 }
 
-const deleteWishlist=async(req,res)=>{
-    await Wishlist.findByIdAndDelete(req.wishlist._id);
-    res.status(200).send(`LIbrary with Id=${req.wishlist._id} has been deleted Successfully`)
+const emptyWishlist=async(req,res)=>{
+    console.log(req.wishlist);
+    await Wishlist.findByIdAndUpdate(req.wishlist._id,{products:[]});
+    res.status(200).send(`Wishlist with Id=${req.wishlist._id} has been deleted Successfully`)
 }
 const createWishlist=async(req,res)=>{
     const{products}= req.body;
@@ -62,4 +67,4 @@ const createWishlist=async(req,res)=>{
 }
 
 
-module.exports={deleteWishlist,updateWishlist,getOnewishlist,getUserWishlist,createWishlist,checkId}
+module.exports={emptyWishlist,updateWishlist,getOnewishlist,getUserWishlist,createWishlist,checkId}

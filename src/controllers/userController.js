@@ -5,7 +5,9 @@ const jwt = require("jsonwebtoken");
 
 const { multerUploads, dataUri } = require("../utils/multer");
 const { uploader } = require("../utils/config/cloudinaryConfig");
-
+const Library = require("../models/Library");
+const Wishlist = require("../models/Wishlist");
+const Cart= require("../models/Cart");
 const getAllUsers = async (req, res, next) => {
 	const users = await User.find();
 	res.send(users);
@@ -28,7 +30,12 @@ const register = async (req, res, next) => {
 		email,
 		password,
 	});
-	res.status(201).send({ message: "User created successfully!", user: createdUser });
+	 const userLibrary= await Library.create({products:[],user:createdUser._id});
+	const userWishlist= await Wishlist.create({products:[],user:createdUser._id});
+	const userCart= await Cart.create({products:[],user:createdUser._id})
+
+
+	res.status(201).send({ message: "User created successfully!", user: createdUser,userLibrary,userWishlist,userCart  });
 };
 
 const updateUser = async (req, res, next) => {
