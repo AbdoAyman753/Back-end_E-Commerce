@@ -1,11 +1,13 @@
-const express=require('express');
-
+const express=require('express')
 const Wishlist=require('../models/Wishlist');
-const Wishlist = require('../models/Wishlist');
+const AppError = require('../utils/AppError');
+
+
+
 
 const checkId=async (req,res,next,val)=>{
     const Wishlist= await Wishlist.findById(val);
-    if(!library) return (new AppError(`No purchase History with This Id ${val}`,404));
+    if(!library) return (new AppErrorError(`No purchase History with This Id ${val}`,404));
     if(req.user.role==='admin'||req.user._id === library.user._id){
         req.wishlist=wishlist;
         next()
@@ -13,6 +15,7 @@ const checkId=async (req,res,next,val)=>{
          return(new AppError("You Aren't Authorized To access this purchase History",401))
     }
 }
+
 
 const getUserWishlist=async(req,res)=>{
     
@@ -45,13 +48,13 @@ const createWishlist=async(req,res)=>{
     if(!products) return (new AppError('Please choose the products again',404))
     const newWishlist= new Wishlist({
         user:req.user._id,
-        products
+        products:products
     })
     if(!newWishlist) return(new AppError(`Please Choose Your Products again`,500))
     await newWishlist.save()
     
-    res.status(201).send(newWishlist)
+    res.status(201).json({message:'Wishlist has been Created',data:newWishlist})
 }
 
 
-module.exports={deleteWishlist,updateWishlist,getOnewishlist,getUserWishlist,createWishlist}
+module.exports={deleteWishlist,updateWishlist,getOnewishlist,getUserWishlist,createWishlist,checkId}

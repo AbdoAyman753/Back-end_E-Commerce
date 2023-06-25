@@ -1,8 +1,11 @@
 const express=require('express');
 const verifyToken=require('../utils/verifyToken')
 const router=express.Router();
-const {deleteWishlist,updateWishlist,getOnewishlist,getUserWishlist,createWishlist}=require('../controllers/wishlistController')
+const {deleteWishlist,updateWishlist,getOnewishlist,getUserWishlist,createWishlist,checkId}=require('../controllers/wishlistController')
 
+
+router
+    .param('/:id',verifyToken,checkId)
 router
     .route('/',)
     .get(verifyToken,getUserWishlist)
@@ -10,8 +13,8 @@ router
 
 router
     .route('/:id')
-    .get(verifyToken,getOnewishlist)
-    .patch(verifyToken,updateWishlist)
-    .delete(verifyToken,deleteWishlist)
+    .get(getOnewishlist)
+    .patch(updateWishlist)
+    .delete(deleteWishlist)
 
 module.exports=router;

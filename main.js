@@ -10,6 +10,9 @@ require('./db');
 // const usersRouter = require("./src/routes/usersRoutes");
 const productRouter = require('./src/routes/productsRoutes');
 const orderRouter = require('./src/routes/orderRoutes');
+const libraryRouter=require('./src/routes/libraryRoutes');
+const wishlistRouter=require('./src/routes/wishlistRoutes');
+
 
 // parsing incoming requests
 app.use(express.json());
@@ -24,7 +27,8 @@ app.use(errorHandler());
 app.use('/orders', orderRouter);
 // app.use("/users", usersRouter);
 app.use('product', productRouter);
-
+app.use('/libraries',libraryRouter);
+app.use('/wishlists',wishlistRouter);
 app.use((req, res, next) => {
   res.send("<h1 style='text-align:center'>Hello World</h1>");
 });
