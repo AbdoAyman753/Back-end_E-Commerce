@@ -1,15 +1,18 @@
 const express = require('express');
 const router = express.Router();
 
-const verifyToken = require('../utils/verifyToken'); // logged in users, admins, or super admins
+// verify req have token and based on token asingn the user to the req
+const verifyToken = require('../utils/verifyToken');
+const isAdmin = require('../utils/isAdmin');
 
+// Product Controllers
 const {
   getAllProducts,
   getProductById,
   createProduct,
   updateProduct,
   deleteProduct,
-} = require('../controllers/productsControlers');
+} = require('../controllers/productsControllers');
 
 // get all Products
 router.get('/', getAllProducts);
@@ -18,12 +21,15 @@ router.get('/', getAllProducts);
 router.get('/:id', getProductById);
 
 // create a new Product
-router.post('/', verifyToken, createProduct);
+router.post('/', verifyToken, isAdmin, createProduct);
+// router.post('/', createProduct); // Just For Development testing 🧪
 
 // update Product Using product_id ( Only Admin Can )
-router.patch('/:id', verifyToken, updateProduct);
+router.patch('/:id', verifyToken, isAdmin, updateProduct);
+// router.patch('/:id', updateProduct); // Just For Development testing 🧪
 
 // delete Product Using product_id ( Only Admin Can )
-router.delete('/:id', verifyToken, deleteProduct);
+router.delete('/:id', verifyToken, isAdmin, deleteProduct);
+// router.delete('/:id', deleteProduct); // Just For Development testing 🧪
 
 module.exports = router;

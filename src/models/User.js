@@ -25,7 +25,8 @@ const userSchema = new Schema({
     default: "user",
   },
   profile_pic:{
-    type: String
+    type: String,
+    default:"https://res.cloudinary.com/ddkkalgoh/image/upload/v1687376480/profile_pics/Default_Avatar.jpg"
   },
   balance:{
     type: Number,
@@ -51,7 +52,7 @@ userSchema.pre("save", async function () {
   // hashing password only when changed,
   //  because this pre middlware will be executed when updating also.
   if (this.isModified("password")) {
-    const hashedPassword = await bcrypt.hash(this.password, process.env.HASHING_COST);
+    const hashedPassword = await bcrypt.hash(this.password, +process.env.HASHING_COST);
     this.password = hashedPassword;
   }
 });

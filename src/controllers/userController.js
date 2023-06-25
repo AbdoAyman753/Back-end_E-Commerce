@@ -3,6 +3,9 @@ const AppError = require("../utils/AppError");
 
 const jwt = require("jsonwebtoken");
 
+const { multerUploads, dataUri } = require("../utils/multer");
+const { uploader } = require("../utils/config/cloudinaryConfig");
+
 const getAllUsers = async (req, res, next) => {
 	const users = await User.find();
 	res.send(users);
@@ -16,13 +19,16 @@ const getUserById = async (req, res, next) => {
 };
 
 const register = async (req, res, next) => {
-	const { username, email, password } = req.body;
+	const { user_name, email, password } = req.body;
+	if(await User.findOne({ email})){
+		res.status(409).send({message: "This Email already registered"});
+	}
 	const createdUser = await User.create({
-		user_name: username,
+		user_name,
 		email,
 		password,
 	});
-	res.send({ message: "user created successfully!", user: createdUser });
+	res.status(201).send({ message: "User created successfully!", user: createdUser });
 };
 
 const updateUser = async (req, res, next) => {
@@ -30,18 +36,61 @@ const updateUser = async (req, res, next) => {
 	const user = await User.findById(id);
 	if (!user) return next(new AppError("User Not Found", 404));
 
-	const { user_name, email, password, role, profile_pic, balance } = req.body;
+	let { user_name, balance } = req.body;
+	if(balance){
+		balance = +balance + +user.balance;
+	}
 
 	const editedUser = await User.findByIdAndUpdate(id, {
 		user_name,
-		email,
-		password,
-		role,
-		profile_pic,
 		balance,
-	});
+	},{new:true});
 	res.send({ message: "user updated successfully!", editedUser });
 };
+
+const uploadUserPic = async (req, res, next) => {
+	const { id } = req.params;
+	const user = await User.findById(id);
+	if (!user) return next(new AppError("User Not Found", 404));
+
+	if (req.file) {
+		const file = dataUri(req);
+		const profile_pic = await uploader.upload(file.content , { public_id: req.file.originalname , folder:"profile_pics"});
+		const updatedUser = await User.findByIdAndUpdate(id, { profile_pic:profile_pic.url }, {new:true});
+		res.send({
+			messge: "Your image has been uploded successfully to cloudinary",
+			updatedUser
+		});
+	}
+	else{
+		res.status(404).send({
+			messge: "No Image Found"
+		});
+	}
+	
+};
+
+const updateRole = async (req, res, next) => {
+	const  admin  = req.user;
+	let { user_id,  role } = req.body;
+	
+	const editedUser = await User.findByIdAndUpdate(user_id, {role},{new:true});
+	res.send({ message: "user Role updated successfully!", editedUser });
+};
+
+const changePassword = async (req, res, next) => {
+	const { id } = req.params;
+	const user = await User.findById(id).select("+password");
+	if (!user) return next(new AppError("User Not Found", 404));
+
+	let { oldPassword, newPassword } = req.body;
+
+	const isMatch = await user.comparePassword(oldPassword);
+	if (!isMatch) return next(new AppError("Invalid Credentials!", 400));
+	
+	const editedUser = await User.findByIdAndUpdate(id, { password: newPassword	},{new:true});
+	res.send({ message: "Password updated successfully!", editedUser });
+}
 
 const deleteUser = async (req, res, next) => {
 	const { id } = req.params;
@@ -64,7 +113,10 @@ const login = async (req, res, next) => {
 	if (!isMatch) return next(new AppError("Invalid Credentials!", 400));
 
 	// creating a token
-	const token = jwt.sign({ id: user._id, role: user.role }, process.env.ENCRYPTION_KEY);
+	const token = jwt.sign(
+		{ id: user._id, role: user.role },
+		process.env.ENCRYPTION_KEY
+	);
 
 	user.password = undefined;
 	res.send({ message: "user logged in successfully!", user, token });
@@ -75,6 +127,9 @@ module.exports = {
 	getUserById,
 	register,
 	updateUser,
+	uploadUserPic,
+	updateRole,
+	changePassword,
 	deleteUser,
 	login,
 };

@@ -8,33 +8,32 @@ const productSchema = new Schema({
     type: String,
     required: true,
   },
-  // imgs_links: [
-  //   {
-  //     type: String,
-  //   },
-  // ],
+
+  imgs_links: [
+    {
+      type: String,
+    },
+  ],
+
   price: {
     type: Number,
     required: true,
   },
+
   vendor: {
     type: String,
     required: true,
   },
+
   category: {
     type: String,
     required: true,
   },
+
   description: {
     type: String,
     required: true,
   },
-  // reviews: [
-  //   {
-  //     type: Schema.ObjectId,
-  //     ref: 'Review', // need to create Review Schema
-  //   },
-  // ],
 
   created_at: {
     type: Date,
