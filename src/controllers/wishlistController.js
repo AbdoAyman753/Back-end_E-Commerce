@@ -29,13 +29,18 @@ const getOnewishlist=async(req,res)=>{
     res.status(200).send(req.wishlist);
 }
 
-const  updateWishlist=async(req,res)=>{
-    const{products}=req.body;
-    if(!products)return (new AppError ('No Updates Values Found',400))
-  const newWishlist = await Wishlist.findById(req.library._id)
-  newWishlist.products.push(...products);
-  await Wishlist.findByIdAndUpdate(req.wishlist._id,{products:newWishlist.products})
-  res.status(201).send(`The Purchase LIst With Id ${req.wishlist._id} Has Been updated`)
+const  updateWishlist=async(req,res,next)=>{
+        const { product } = req.body;
+        if (!product) return next(new AppError("No Updates Values Found", 404));
+
+        const wishlist = await Wishlist.findById(req.wishlist._id);
+        wishlist.products.push(product);
+
+        await Wishlist.findByIdAndUpdate(req.wishlist._id, { products: wishlist.products });
+        res.status(201).send(
+            `Wishlist With Id ${req.wishlist._id} Has Been updated`
+        );
+    
 
 }
 
