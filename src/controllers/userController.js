@@ -28,7 +28,7 @@ const register = async (req, res, next) => {
 		email,
 		password,
 	});
-	res.send({ message: "User created successfully!", user: createdUser });
+	res.status(201).send({ message: "User created successfully!", user: createdUser });
 };
 
 const updateUser = async (req, res, next) => {
@@ -36,16 +36,13 @@ const updateUser = async (req, res, next) => {
 	const user = await User.findById(id);
 	if (!user) return next(new AppError("User Not Found", 404));
 
-	let { user_name, email, password, role, balance } = req.body;
+	let { user_name, balance } = req.body;
 	if(balance){
 		balance = +balance + +user.balance;
 	}
 
 	const editedUser = await User.findByIdAndUpdate(id, {
 		user_name,
-		email,
-		password,
-		role,
 		balance,
 	},{new:true});
 	res.send({ message: "user updated successfully!", editedUser });
@@ -80,6 +77,20 @@ const updateRole = async (req, res, next) => {
 	const editedUser = await User.findByIdAndUpdate(user_id, {role},{new:true});
 	res.send({ message: "user Role updated successfully!", editedUser });
 };
+
+const changePassword = async (req, res, next) => {
+	const { id } = req.params;
+	const user = await User.findById(id).select("+password");
+	if (!user) return next(new AppError("User Not Found", 404));
+
+	let { oldPassword, newPassword } = req.body;
+
+	const isMatch = await user.comparePassword(oldPassword);
+	if (!isMatch) return next(new AppError("Invalid Credentials!", 400));
+	
+	const editedUser = await User.findByIdAndUpdate(id, { password: newPassword	},{new:true});
+	res.send({ message: "Password updated successfully!", editedUser });
+}
 
 const deleteUser = async (req, res, next) => {
 	const { id } = req.params;
@@ -118,6 +129,7 @@ module.exports = {
 	updateUser,
 	uploadUserPic,
 	updateRole,
+	changePassword,
 	deleteUser,
 	login,
 };
