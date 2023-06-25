@@ -17,6 +17,7 @@ const {
   updateUser,
   uploadUserPic,
   updateRole,
+  changePassword,
   deleteUser,
   login,
 } = require("../controllers/userController");
@@ -37,7 +38,7 @@ router.patch("/:id", verifyToken, canEditUser, updateUser);
 
 // app.use("/:id/profile_pic", cloudinaryConfig);
 router.patch("/:id/profile_pic", verifyToken, canEditUser, multerUploads, cloudinaryConfig,uploadUserPic);
-
+router.patch("/:id/changePassword", verifyToken, changePassword);
 router.patch("/changeRole", verifyToken, isAdmin, updateRole);
 // delete user
 router.delete("/:id", verifyToken, isAdmin, deleteUser);
