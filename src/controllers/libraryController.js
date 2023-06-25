@@ -19,10 +19,10 @@ const checkId=async (req,res,next,val)=>{
 }
 
 
-const getAllLibraries=async(req,res)=>{
+const getAllLibraries=async(req,res,next)=>{
     
     const libraries=await Library.find();
-    if(!libraries) return (new AppError(`No Purchase Histories Found`,404))
+    if(!libraries) return next(new AppError(`No Purchase Histories Found`,404))
     res.status(200).send(libraries);
 }
 
@@ -31,22 +31,23 @@ const getOneLibrary=async(req,res)=>{
     res.status(200).send(req.Library);
 }
 
-const createLibrary= async(req,res)=>{
+const createLibrary= async(req,res,next)=>{
     const{products}= req.body;
-    if(!products) return (new AppError('Please choose the products again',404))
+    if(!products) return next(new AppError('Please choose the products again',404))
     const newLibrary= new Library({
         user:req.user._id,
         products
     })
-    if(!newLibrary) return(new AppError(`Please Choose Your Products again`,500))
+    if(!newLibrary) return next(new AppError(`Please Choose Your Products again`,500))
     await newLibrary.save()
     
     res.status(201).send(newLibrary)
 }
 
-const updateLibrary=async(req,res)=>{
+const updateLibrary=async(req,res,next)=>{
       const{products}=req.body;
-      if(!products)return (new AppError ('No Updates Values Found',400))
+      if(!products)return next(new AppError ('No Updates Values Found',400));
+      
     const newLibrary = await Library.findById(req.library._id)
     newLibrary.products.push(...products);
     await Library.findByIdAndUpdate(req.library._id,{products:newLibrary.products})
