@@ -13,7 +13,7 @@ const addToCart = async (req, res, next) => {
 	if (!product) return next(new AppError("No Updates Values Found", 404));
 	const cart = await Cart.findById(cart_id);
 	cart.products.push(product);
-	await Cart.findByIdAndUpdate(cart_id, { products: cart.products });
+	await Cart.findByIdAndUpdate(cart_id, { products: [...cart] });
 	res.status(201).send(
 		`Cart With Id ${cart_id} Has Been updated`
 	);
@@ -21,11 +21,11 @@ const addToCart = async (req, res, next) => {
 
 const removeFromCart = async (req, res, next) => {
     const cart_id = req.params.id;
-	const { prodToRemove } = req.body;
+	const { product } = req.body;
 	if (!product) return next(new AppError("No Updates Values Found", 404));
 	const cart = await Cart.findById(cart_id);
-	const newCart = cart.products.filter(product => product !== prodToRemove);
-	await Cart.findByIdAndUpdate(cart_id, { products: newCart.products });
+	const newCart = cart.products.filter(el => el !== product);
+	await Cart.findByIdAndUpdate(cart_id, { products: [...newCart] });
 	res.status(200).send(
 		`Cart With Id ${cart_id} Has Been updated`
 	);
@@ -35,7 +35,7 @@ const emptyCart = async (req, res, next) => {
     const cart_id = req.params.id;
 	const cart = await Cart.findById(cart_id);
 	const newCart = cart.products.filter(product => false);
-	await Cart.findByIdAndUpdate(cart_id, { products: newCart.products });
+	await Cart.findByIdAndUpdate(cart_id, { products: [...newCart] });
 	res.status(200).send(
 		`Cart With Id ${cart_id} Has Been Emptied`
 	);
