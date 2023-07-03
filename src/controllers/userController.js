@@ -61,7 +61,7 @@ const uploadUserPic = async (req, res, next) => {
 	if (!user) return next(new AppError("User Not Found", 404));
 
 	if (req.file) {
-		const file = dataUri(req);
+		const file = dataUri(req.file);
 		const profile_pic = await uploader.upload(file.content , { public_id: req.file.originalname , folder:"profile_pics"});
 		const updatedUser = await User.findByIdAndUpdate(id, { profile_pic:profile_pic.url }, {new:true});
 		res.send({
