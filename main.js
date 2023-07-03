@@ -9,24 +9,25 @@ require('./db');
 //Requiring Routes
 const usersRouter = require('./src/routes/usersRoutes');
 const orderRouter = require('./src/routes/orderRoutes');
+const libraryRouter=require('./src/routes/libraryRoutes');
+const wishlistRouter=require('./src/routes/wishlistRoutes');
 const productRouter = require('./src/routes/productsRoutes');
 
 // parsing incoming requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
 // error handler over any async function
 app.use(errorHandler());
-
 // Routes
 app.use('/users', usersRouter);
 app.use('/orders', orderRouter);
+app.use('/product', productRouter);
+app.use('/libraries',libraryRouter);
+app.use('/wishlists',wishlistRouter);
 app.use('/products', productRouter);
-
 app.use((req, res, next) => {
   res.send("<h1 style='text-align:center'>Hello World</h1>");
 });
-
 // Global error handler
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

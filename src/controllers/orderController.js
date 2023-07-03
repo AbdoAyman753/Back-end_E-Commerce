@@ -5,17 +5,23 @@ const AppError= require('../utils/AppError');
 
 
 // Id Check Middleware
- const checkId= async (req,res,next,val)=>{
-    const order= await Order.findById(val);
-    if(!order) return (new AppError(`No Order Found With id=${val}`,404));
-    req.order=order;
-    next();
+ const checkId= async (req,res,next)=>{
+    const order= await Order.findById(req.params.id);
+    if(!order) return next(new AppError(`No Order Found With id=${req.params.id}`,404));
+    if(req.user.role==='admin'||req.user._id.toString() === library.user._id.toString()){
+         req.order=order;
+         next();
+    }else{
+        return next(new AppError("You Aren't Authorized To access this Order",401))
+   }
+
+    
 }
 
 // Get all Orders
 const getAllOrders= async (req,res,err)=>{
     const orders= await Order.find();
-    if(!orders) return (new AppError(`No Orders exists`, 404))
+    if(!orders) return next(new AppError(`No Orders exists`, 404))
     res.status(200).send(orders)
 }
 
@@ -25,18 +31,18 @@ const getOneOrder=async(req,res)=>{
     res.send(req.order);
 }
 
-const createOrder=async(req,res)=>{
+const createOrder=async(req,res,next)=>{
     const{user,products}=req.body;
-    if(!user || !products) return (new AppError('Please provide product and user Information',400));
+    if(!user || !products) return next(new AppError('Please provide product and user Information',400));
     const newOrder= new Order({user,products});
     await newOrder.save()
     res.status(201).send("Order Has been Created Successfully")
 
 }
 //Update Order
-const updateOrder=async(req,res)=>{
+const updateOrder=async(req,res,next)=>{
     const{products}=req.body;
-    if(!products) return (new AppError("No Order update has been Found",400));
+    if(!products) return next(new AppError("No Order update has been Found",400));
 
     await Order.findByIdAndUpdate(req.order._id,{products:products});
 
