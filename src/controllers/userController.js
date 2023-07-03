@@ -41,7 +41,7 @@ const register = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
 	const { id } = req.params;
 	const user = await User.findById(id);
-	if (!user) return next(new AppError("User Not Found", 404));
+	if (!user) return next(new AppError("User Not Found", 500));
 
 	let { user_name, balance } = req.body;
 	if(balance){
