@@ -15,7 +15,7 @@ const {
 } = require('../controllers/productsControllers');
 
 // get all Products
-router.get('/', getAllProducts);
+router.get('/',getAllProducts);
 
 // get Product by Product_id
 router.get('/:id', getProductById);
