@@ -2,7 +2,7 @@ const multer  = require('multer')
 const DatauriParser = require('datauri/parser');
 const path = require('path');
 const storage = multer.memoryStorage();
-const multerUploads = multer({ storage }).single('image');
+const multerUploads = multer({ storage });
 
 
 // const dUri = new Datauri();

@@ -27,7 +27,7 @@ const createProduct = async (req, res, next) => {
   });
   if (!createdProduct) return next(new AppError('Product Not Found!', 400));
   res.send({
-    message: 'Product Created Successfully!',
+    message: `Product ${product_name} Created Successfully!`,
     Product: createProduct,
   });
 };
@@ -69,7 +69,10 @@ const deleteProduct = async (req, res, next) => {
 
   const deletedProduct = await Product.findByIdAndDelete(product_id);
 
-  res.send({ message: 'Product deleted successfully!', deletedProduct });
+  res.send({
+    message: `Product ${product.product_name} deleted successfully!`,
+    deletedProduct,
+  });
 };
 
 module.exports = {
