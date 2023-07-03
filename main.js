@@ -12,7 +12,7 @@ const orderRouter = require('./src/routes/orderRoutes');
 const libraryRouter=require('./src/routes/libraryRoutes');
 const wishlistRouter=require('./src/routes/wishlistRoutes');
 const productRouter = require('./src/routes/productsRoutes');
-// const cartRouter = require('./src/routes/cartRoutes');
+const cartRouter = require('./src/routes/cartRoutes');
 
 // parsing incoming requests
 app.use(express.json());
@@ -25,9 +25,8 @@ app.use('/orders', orderRouter);
 app.use('/libraries',libraryRouter);
 app.use('/wishlists',wishlistRouter);
 app.use('/products', productRouter);
-// app.use('/cart');
-// app.use('/wishlist');
-// app.use('/library');
+app.use('/carts', cartRouter);
+
 
 app.use((req, res, next) => {
   res.send("<h1 style='text-align:center'>Hello World</h1>");
