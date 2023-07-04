@@ -1,5 +1,5 @@
-const AppError = require('./AppError');
 
+const AppError = require("./AppError");
 const isAdmin = async (req, res, next) => {
   // logged in user
   if (!req.user.role === 'admin') {
