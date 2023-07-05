@@ -15,7 +15,8 @@ function refineStrings(string) {
 
 const getAllProducts = async (req, res, next) => {
   const Products = await Product.find();
-  res.send(Products);
+  const categoryList = Product.schema.path('category').enumValues;
+  res.send({ Products, categoryList });
 };
 
 const getProductById = async (req, res, next) => {
