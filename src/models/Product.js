@@ -26,7 +26,6 @@ const productSchema = new Schema({
     enum: [
       'Action',
       'Adventure',
-      'Epic Games',
       'Sandbox',
       'Open World Games',
       'Sports',
