@@ -23,6 +23,15 @@ const productSchema = new Schema({
 
   category: {
     type: String,
+    enum: [
+      'Action',
+      'Adventure',
+      'Epic Games',
+      'Sandbox',
+      'Open World Games',
+      'Sports',
+      'Stealth',
+    ],
     required: true,
   },
 
