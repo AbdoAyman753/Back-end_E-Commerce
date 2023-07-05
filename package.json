@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "nodemon main.js",
+    "start": "nodemon .",
     "debug": "nodemon --inspect ."
   },
   "author": "Abdelrahman M.Ayman",
@@ -12,6 +12,7 @@
   "dependencies": {
     "bcrypt": "^5.1.0",
     "cloudinary": "^1.37.2",
+    "cors": "^2.8.5",
     "datauri": "^4.1.0",
     "dotenv": "^16.1.4",
     "express": "^4.18.2",
@@ -21,6 +22,7 @@
     "mongoose": "^7.2.2",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "stripe": "^12.11.0"
   }
 }
