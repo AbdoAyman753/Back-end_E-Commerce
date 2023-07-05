@@ -1,3 +1,5 @@
+const Library = require("../../models/Library");
+const Order = require("../../models/Order");
 const AppError = require("../AppError");
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
@@ -72,9 +74,17 @@ exports.webhookCheckout = async (req, res, next) => {
 
     const customer = await stripe.customers.retrieve(data.customer);
     const gamesIds = JSON.parse(customer.metadata.cart);
-    // console.log(gamesIds);
-
     // create order and add games to library
+
+    const newOrder = new Order({
+      products: gamesIds,
+      user: req.user._id,
+      totalPrice: totalPrice,
+    });
+    await newOrder.save();
+
+    const newLibrary = new Library({ products: gamesIds, user: req.user._id });
+    await newLibrary.save();
   }
   res.status(200).json({ received: true });
 };
