@@ -25,17 +25,21 @@ const register = async (req, res, next) => {
 	if(await User.findOne({ email})){
 		res.status(409).send({message: "This Email already registered"});
 	}
-	const createdUser = await User.create({
+	let createdUser = await User.create({
 		user_name,
 		email,
 		password,
 	});
-	 const userLibrary= await Library.create({products:[],user:createdUser._id});
+	const userLibrary= await Library.create({products:[],user:createdUser._id});
 	const userWishlist= await Wishlist.create({products:[],user:createdUser._id});
 	const userCart= await Cart.create({products:[],user:createdUser._id})
-
-
-	res.status(201).send({ message: "User created successfully!", user: createdUser,userLibrary,userWishlist,userCart  });
+	await User.findByIdAndUpdate(createdUser._id,
+		{	library:userLibrary._id,
+			wishlist:userWishlist._id,
+			cart:userCart._id
+		});
+	// .populate('library');
+	res.status(201).send({ message: "User created successfully!" });
 };
 
 const updateUser = async (req, res, next) => {
@@ -112,7 +116,8 @@ const deleteUser = async (req, res, next) => {
 const login = async (req, res, next) => {
 	// checking if the email exists
 	const { email, password } = req.body;
-	const user = await User.findOne({ email: email }).select("+password");
+	const user = await User.findOne({ email: email }).select("+password")
+	// .populate({path:'library',select:''});
 	if (!user) return next(new AppError("Invalid Credentials!", 400));
 
 	// checking if the password is correct
