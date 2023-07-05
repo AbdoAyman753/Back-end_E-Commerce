@@ -3,6 +3,7 @@ const app = express();
 const errorHandler = require("express-async-error").Handler;
 require("dotenv").config();
 
+const cors = require("cors");
 // DB connection
 require("./db");
 
@@ -17,6 +18,7 @@ const cartRouter = require("./src/routes/cartRoutes");
 //payment
 const payment = require("./src/utils/user/payment");
 
+app.use(cors());
 app.post(
   "/webhook-checkout",
   express.raw({ type: "application/json" }),
@@ -28,7 +30,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // error handler over any async function
 app.use(errorHandler());
-
 
 // Routes
 app.use("/users", usersRouter);
@@ -53,10 +54,11 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(+process.env.PORT,(error) =>{
-  if(!error)
-      console.log("Server is Successfully Running, and App is listening on port "+ +process.env.PORT)
-  else
-      console.log("Error occurred, server can't start", error);
-  }
-);
+app.listen(+process.env.PORT, (error) => {
+  if (!error)
+    console.log(
+      "Server is Successfully Running, and App is listening on port " +
+        +process.env.PORT
+    );
+  else console.log("Error occurred, server can't start", error);
+});
