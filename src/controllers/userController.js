@@ -96,12 +96,19 @@ const changePassword = async (req, res, next) => {
 	const user = await User.findById(id).select("+password");
 	if (!user) return next(new AppError("User Not Found", 404));
 
-	let { oldPassword, newPassword } = req.body;
-
-	const isMatch = await user.comparePassword(oldPassword);
+	let { currentPassword, newPassword, confirmPassword } = req.body;
+	
+	const isMatch = await user.comparePassword(currentPassword);
 	if (!isMatch) return next(new AppError("Invalid Credentials!", 400));
 	
-	const editedUser = await User.findByIdAndUpdate(id, { password: newPassword	},{new:true});
+	if(newPassword !== confirmPassword){
+		return next(new AppError('Password mismatch', 403));
+	}
+
+	const editedUser = await User.findByIdAndUpdate(id, { password: await bcrypt.hash(
+			newPassword,
+			+process.env.HASHING_COST
+		)},{new:true});
 	res.send({ message: "Password updated successfully!", editedUser });
 }
 
