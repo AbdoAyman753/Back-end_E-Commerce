@@ -13,23 +13,36 @@ const {
   updateProduct,
   deleteProduct,
 } = require('../controllers/productsControllers');
+const { multerUploads } = require('../utils/multer');
+const { cloudinaryConfig } = require('../utils/config/cloudinaryConfig');
 
 // get all Products
-router.get('/',getAllProducts);
+router.get('/', getAllProducts);
 
 // get Product by Product_id
 router.get('/:id', getProductById);
 
 // create a new Product
-router.post('/', verifyToken, isAdmin, createProduct);
-// router.post('/', createProduct); // Just For Development testing 🧪
+router.post(
+  '/',
+  verifyToken,
+  isAdmin,
+  multerUploads.array('product_images', 8),
+  cloudinaryConfig,
+  createProduct
+);
 
 // update Product Using product_id ( Only Admin Can )
-router.patch('/:id', verifyToken, isAdmin, updateProduct);
-// router.patch('/:id', updateProduct); // Just For Development testing 🧪
+router.patch(
+  '/:id',
+  verifyToken,
+  isAdmin,
+  multerUploads.array('product_images', 8),
+  cloudinaryConfig,
+  updateProduct
+);
 
 // delete Product Using product_id ( Only Admin Can )
 router.delete('/:id', verifyToken, isAdmin, deleteProduct);
-// router.delete('/:id', deleteProduct); // Just For Development testing 🧪
 
 module.exports = router;
