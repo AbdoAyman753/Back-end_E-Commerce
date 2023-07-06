@@ -47,7 +47,7 @@ const updateWishlist = async (req, res, next) => {
       .json({ message: "The Product Already exist in the Wishlist" });
   }
 
-  wishlist.products.push(products);
+  // wishlist.products.push(products);
   await Wishlist.findByIdAndUpdate(wishlist._id, {
     products: wishlist.products,
   });
