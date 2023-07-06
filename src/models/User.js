@@ -49,6 +49,10 @@ const userSchema = new Schema({
 	  ref:'Cart',
 	  default: new mongoose.Types.ObjectId('4edd40c86762e0fb12000003')
 	},
+	orders:[{
+		type:mongoose.Schema.Types.ObjectId,
+		ref:'Order'
+	}],
 	created_at: {
 		type: Date,
 		default: Date.now(),
@@ -78,8 +82,9 @@ userSchema.post('save', function () {
 	this.password = undefined;
 });
 
-userSchema.pre('findOne', function () {
+userSchema.pre('findOne', async function () {
 	// this.populate('library');
+	this.orders.push( await Order.find({ user: this._id}) );
 	this.populate({
 		path: 'library',
 		select: ['products'],
@@ -87,18 +92,24 @@ userSchema.pre('findOne', function () {
 	});
 	this.populate({
 		path: 'wishlist',
-		select: ['_id', 'products'],
+		select: ['products'],
 		populate: { path: 'products', model: 'Product' },
 	});
 	this.populate({
 		path: 'cart',
-		select: ['_id', 'products'],
+		select: ['products'],
+		populate: { path: 'products', model: 'Product' },
+	});
+	this.populate({
+		path: 'orders',
+		select: ['products'],
 		populate: { path: 'products', model: 'Product' },
 	});
 });
 
-userSchema.pre('find', function () {
+userSchema.pre('find', async function () {
 	// this.populate('library');
+	this.orders.push( await Order.find({ user: this._id}) );
 	this.populate({
 		path: 'library',
 		select: ['products'],
@@ -106,12 +117,17 @@ userSchema.pre('find', function () {
 	});
 	this.populate({
 		path: 'wishlist',
-		select: ['_id', 'products'],
+		select: ['products'],
 		populate: { path: 'products', model: 'Product' },
 	});
 	this.populate({
 		path: 'cart',
-		select: ['_id', 'products'],
+		select: ['products'],
+		populate: { path: 'products', model: 'Product' },
+	});
+	this.populate({
+		path: 'orders',
+		select: ['products'],
 		populate: { path: 'products', model: 'Product' },
 	});
 });
