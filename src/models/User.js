@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const { populate } = require('./Library');
+const Order = require('./Order');
 
 const { Schema } = mongoose;
 
@@ -84,7 +84,7 @@ userSchema.post('save', function () {
 
 userSchema.pre('findOne', async function () {
 	// this.populate('library');
-	this.orders.push( await Order.find({ user: this._id}) );
+	this.orders = await Order.find({ user: this._id});
 	this.populate({
 		path: 'library',
 		select: ['products'],
@@ -109,7 +109,7 @@ userSchema.pre('findOne', async function () {
 
 userSchema.pre('find', async function () {
 	// this.populate('library');
-	this.orders.push( await Order.find({ user: this._id}) );
+	this.orders = await Order.find({ user: this._id});
 	this.populate({
 		path: 'library',
 		select: ['products'],
