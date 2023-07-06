@@ -19,18 +19,19 @@ const createCart = async (req, res, next) => {
 };
 
 const updateCart = async (req, res, next) => {
-	const { user } = req.user;
+	const  user  = req.user;
 	if(!user) return next(new AppError('User not found',404));
 	const { products } = req.body;
 	if (!products) return next(new AppError('No Updates Values Found', 404));
 	const cart = await Cart.findById(user.cart);
+	console.log(cart);
 	// cart.products.push(products);
 	await Cart.findByIdAndUpdate(cart._id, { products: [...products] });
-	res.status(201).send(`Cart ${cart_id} has been updated`);
+	res.status(201).send(`Cart ${cart._id} has been updated`);
 };
 
 const emptyCart = async (req, res, next) => {
-	const { user } = req.user;
+	const  user  = req.user;
 	if(!user) return next(new AppError('User not found',404));
 	const cart_id = user.cart;
 	// const cart = await Cart.findById(cart_id);

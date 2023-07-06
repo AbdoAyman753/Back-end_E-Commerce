@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const AppError = require("../utils/AppError");
-
+const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 
 const { multerUploads, dataUri } = require("../utils/multer");
