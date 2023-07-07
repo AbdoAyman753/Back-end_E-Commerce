@@ -122,12 +122,12 @@ const updateProduct = async (req, res, next) => {
 
   let updatedImgsLinks;
 
-  if (uploadedImages.length) {
-    if (old_images.length) {
-      updatedImgsLinks = [...old_images, ...uploadedImages];
-    } else {
-      updatedImgsLinks = uploadedImages;
-    }
+  if (uploadedImages.length && old_images.length) {
+    updatedImgsLinks = [...old_images, ...uploadedImages];
+  } else if (uploadedImages.length) {
+    updatedImgsLinks = uploadedImages;
+  } else if (old_images.length) {
+    updatedImgsLinks = old_images;
   } else {
     updatedImgsLinks = product.imgs_links;
   }
