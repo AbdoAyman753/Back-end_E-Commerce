@@ -80,8 +80,15 @@ const createProduct = async (req, res, next) => {
 // The Logic Below Is Designed For The Patch HTTP Method Only.
 const updateProduct = async (req, res, next) => {
   const product_id = req.params.id;
-  const { product_name, price, vendor, category, description, reviews } =
-    req.body;
+  const {
+    product_name,
+    price,
+    vendor,
+    category,
+    description,
+    reviews,
+    old_images,
+  } = req.body;
 
   const product = await Product.findById(product_id);
   if (!product)
@@ -113,9 +120,26 @@ const updateProduct = async (req, res, next) => {
     uploadedImages = await Promise.all(uploadPromises);
   }
 
+  let updatedImgsLinks;
+
+  if (uploadedImages.length) {
+    if (old_images.length) {
+      updatedImgsLinks = [...old_images, ...uploadedImages];
+    } else {
+      updatedImgsLinks = uploadedImages;
+    }
+  } else {
+    updatedImgsLinks = product.imgs_links;
+  }
+
   const editedProduct = await Product.findByIdAndUpdate(product_id, {
     product_name,
-    imgs_links: uploadedImages.length ? uploadedImages : product.imgs_links,
+    // imgs_links: uploadedImages.length
+    //   ? old_images.length
+    //     ? [...old_images, ...uploadedImages]
+    //     : uploadedImages
+    //   : product.imgs_links,
+    imgs_links: updatedImgsLinks,
     price,
     vendor,
     category,
