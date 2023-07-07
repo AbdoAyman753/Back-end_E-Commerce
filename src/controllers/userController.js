@@ -1,13 +1,14 @@
 const User = require("../models/User");
 const AppError = require("../utils/AppError");
-
+const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 
 const { multerUploads, dataUri } = require("../utils/multer");
 const { uploader } = require("../utils/config/cloudinaryConfig");
 const Library = require("../models/Library");
 const Wishlist = require("../models/Wishlist");
-const Cart= require("../models/Cart");
+const Cart = require("../models/Cart");
+const Order = require('../models/Order');
 const getAllUsers = async (req, res, next) => {
 	const users = await User.find();
 	res.send(users);
@@ -17,6 +18,7 @@ const getUserById = async (req, res, next) => {
 	const { id } = req.params;
 	const user = await User.findById(id);
 	if (!user) return next(new AppError("User Not Found!", 404));
+	// user.orders = Order.find({ user: user._id});
 	res.send(user);
 };
 
@@ -30,9 +32,9 @@ const register = async (req, res, next) => {
 		email,
 		password,
 	});
-	const userLibrary= await Library.create({products:[],user:createdUser._id});
-	const userWishlist= await Wishlist.create({products:[],user:createdUser._id});
-	const userCart= await Cart.create({products:[],user:createdUser._id})
+	const userLibrary = await Library.create({products:[],user:createdUser._id});
+	const userWishlist = await Wishlist.create({products:[],user:createdUser._id});
+	const userCart = await Cart.create({products:[],user:createdUser._id});
 	await User.findByIdAndUpdate(createdUser._id,
 		{	library:userLibrary._id,
 			wishlist:userWishlist._id,
@@ -94,12 +96,19 @@ const changePassword = async (req, res, next) => {
 	const user = await User.findById(id).select("+password");
 	if (!user) return next(new AppError("User Not Found", 404));
 
-	let { oldPassword, newPassword } = req.body;
-
-	const isMatch = await user.comparePassword(oldPassword);
+	let { currentPassword, newPassword, confirmPassword } = req.body;
+	
+	const isMatch = await user.comparePassword(currentPassword);
 	if (!isMatch) return next(new AppError("Invalid Credentials!", 400));
 	
-	const editedUser = await User.findByIdAndUpdate(id, { password: newPassword	},{new:true});
+	if(newPassword !== confirmPassword){
+		return next(new AppError('Password mismatch', 403));
+	}
+
+	const editedUser = await User.findByIdAndUpdate(id, { password: await bcrypt.hash(
+			newPassword,
+			+process.env.HASHING_COST
+		)},{new:true});
 	res.send({ message: "Password updated successfully!", editedUser });
 }
 
@@ -129,7 +138,8 @@ const login = async (req, res, next) => {
 		{ id: user._id, role: user.role },
 		process.env.ENCRYPTION_KEY
 	);
-
+	// user.orders = [{_id:'64916a0c08962c2104bd4058'}];
+	// user.orders.push( await Order.find({ user: user._id}) );
 	user.password = undefined;
 	res.send({ message: "user logged in successfully!", user, token });
 };

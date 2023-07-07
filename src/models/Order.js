@@ -19,7 +19,7 @@ const order = new Schema({
   status: {
     type: String,
     enum: ["successful", "declined", "inprogress"],
-    default: "inprogress",
+    default: "successful",
   },
   createdAt: {
     type: Date,
