@@ -132,20 +132,19 @@ const updateProduct = async (req, res, next) => {
     updatedImgsLinks = product.imgs_links;
   }
 
-  const editedProduct = await Product.findByIdAndUpdate(product_id, {
-    product_name,
-    // imgs_links: uploadedImages.length
-    //   ? old_images.length
-    //     ? [...old_images, ...uploadedImages]
-    //     : uploadedImages
-    //   : product.imgs_links,
-    imgs_links: updatedImgsLinks,
-    price,
-    vendor,
-    category,
-    description,
-    reviews,
-  });
+  const editedProduct = await Product.findByIdAndUpdate(
+    product_id,
+    {
+      product_name,
+      imgs_links: updatedImgsLinks,
+      price,
+      vendor,
+      category,
+      description,
+      reviews,
+    },
+    { new: true }
+  );
   res.send({
     message: 'Product updated successfully!',
     Product: editedProduct,
