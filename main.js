@@ -17,6 +17,7 @@ const cartRouter = require("./src/routes/cartRoutes");
 
 //payment
 const payment = require("./src/utils/user/payment");
+const verifyToken = require("./src/utils/verifyToken");
 
 app.use(cors());
 app.post(
@@ -39,7 +40,11 @@ app.use("/wishlists", wishlistRouter);
 app.use("/products", productRouter);
 app.use("/carts", cartRouter);
 // payment route
-app.post("/create-checkout-session", payment.createCheckoutSession);
+app.post(
+  "/create-checkout-session",
+  verifyToken,
+  payment.createCheckoutSession
+);
 
 app.use((req, res, next) => {
   res.send("<h1 style='text-align:center'>Hello World</h1>");

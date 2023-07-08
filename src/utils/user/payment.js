@@ -1,20 +1,24 @@
+const Cart = require("../../models/Cart");
 const Library = require("../../models/Library");
 const Order = require("../../models/Order");
 const AppError = require("../AppError");
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-exports.createCheckoutSession = async (req, res) => {
-  const cart = req.body;
 
+exports.createCheckoutSession = async (req, res) => {
+  const { cart, totalPrice } = req.body;
+  // console.log(req.user.email);
+  // console.log(req.user.id);
   const cartIds = cart.map((item) => {
     return {
-      id: item._id,
+      _id: item._id,
     };
   });
 
   const customer = await stripe.customers.create({
     metadata: {
-      // user_id: req.user.id,
+      user_id: req.user.id,
+      totalPrice,
       cart: JSON.stringify(cartIds),
     },
   });
@@ -40,7 +44,7 @@ exports.createCheckoutSession = async (req, res) => {
             description: item.description,
             images: [item.imgs_links[0]],
           },
-          unit_amount: item.price * 100,
+          unit_amount: Math.floor(item.price * 100),
         },
         quantity: 1,
       };
@@ -73,18 +77,38 @@ exports.webhookCheckout = async (req, res, next) => {
     const data = event.data.object;
 
     const customer = await stripe.customers.retrieve(data.customer);
+    const { user_id, totalPrice } = customer.metadata;
+    // const user_id = JSON.parse(customer.metadata.user_id);
     const gamesIds = JSON.parse(customer.metadata.cart);
+    console.log(gamesIds, user_id, totalPrice);
     // create order and add games to library
 
     const newOrder = new Order({
       products: gamesIds,
-      user: req.user._id,
-      totalPrice: totalPrice,
+      user: user_id,
+      totalPrice: +totalPrice,
     });
     await newOrder.save();
 
-    const newLibrary = new Library({ products: gamesIds, user: req.user._id });
-    await newLibrary.save();
+    // const newLibrary = new Library({ products: gamesIds, user: user_id });
+    // await newLibrary.save();
+    // { $push: { tags: ['javascript'] } }
+    await Library.findOneAndUpdate(
+      { user: user_id },
+      { $push: { products: gamesIds } }
+    );
+    // const cart = await Cart.findOneAndUpdate(
+    //   { user: user_id },
+    //   { $set: { products: [] } }
+    // );
+    const cart = await Cart.findOneAndUpdate(
+      { user: user_id },
+      { products: [] },
+      { new: true }
+    );
+    console.log(cart);
+    // const cart = await Cart.findOne({ user: user_id });
+    // library.products.push(...gamesIds);
   }
   res.status(200).json({ received: true });
 };
