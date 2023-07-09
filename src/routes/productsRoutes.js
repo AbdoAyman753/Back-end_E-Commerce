@@ -12,12 +12,20 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
+  newestProducts,
+  expensiveProducts,
 } = require('../controllers/productsControllers');
 const { multerUploads } = require('../utils/multer');
 const { cloudinaryConfig } = require('../utils/config/cloudinaryConfig');
 
 // get all Products
 router.get('/', getAllProducts);
+
+// get The Newest 10 Products
+router.get('/newest', newestProducts);
+
+// get The Most Expensive 6 Products
+router.get('/expensive', expensiveProducts);
 
 // get Product by Product_id
 router.get('/:id', getProductById);

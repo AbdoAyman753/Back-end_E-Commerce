@@ -19,6 +19,20 @@ const getAllProducts = async (req, res, next) => {
   res.send({ Products, categoryList });
 };
 
+const newestProducts = async (req, res, next) => {
+  const newestTenProducts = await Product.find()
+    .sort({ created_at: -1 })
+    .limit(10);
+  res.send({ newestTenProducts });
+};
+
+const expensiveProducts = async (req, res, next) => {
+  const mostExpensiveProducts = await Product.find()
+    .sort({ price: -1 })
+    .limit(6);
+  res.send({ mostExpensiveProducts });
+};
+
 const getProductById = async (req, res, next) => {
   const product_id = req.params.id;
   const product = await Product.findById(product_id);
@@ -167,6 +181,8 @@ const deleteProduct = async (req, res, next) => {
 
 module.exports = {
   getAllProducts,
+  newestProducts,
+  expensiveProducts,
   getProductById,
   createProduct,
   updateProduct,
