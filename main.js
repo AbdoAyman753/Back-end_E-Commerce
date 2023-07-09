@@ -46,9 +46,9 @@ app.post(
   payment.createCheckoutSession
 );
 
-app.use((req, res, next) => {
-  res.send("<h1 style='text-align:center'>Hello World</h1>");
-});
+// app.use((req, res, next) => {
+//   res.send("<h1 style='text-align:center'>Hello World</h1>");
+// });
 // Global error handler
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
