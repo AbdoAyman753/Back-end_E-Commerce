@@ -102,35 +102,35 @@ userSchema.post("save", function () {
   this.password = undefined;
 });
 
-userSchema.pre("findOne", async function () {
-  // this.populate('library');
-  let id = this.getQuery()["_id"];
-  //   console.log("this", this._id);
-  //   console.log("id", id);
-  //   this.orders = await Order.find({ user: id });
-  //   console.log(this.orders);
-  this.populate({
-    path: "library",
-    select: ["products"],
-    populate: { path: "products", model: "Product" },
-  });
-  this.populate({
-    path: "wishlist",
-    select: ["products"],
-    populate: { path: "products", model: "Product" },
-  });
-  this.populate({
-    path: "cart",
-    select: ["products"],
-    populate: { path: "products", model: "Product" },
-  });
-  //   this.populate("orders");
-  this.populate({
-    path: "orders",
-    select: ["products", "totalPrice", "createdAt"],
-    populate: { path: "products", model: "Product" },
-  });
-});
+// userSchema.pre("findOne", async function () {
+//   // this.populate('library');
+//   let id = this.getQuery()["_id"];
+//   //   console.log("this", this._id);
+//   //   console.log("id", id);
+//   //   this.orders = await Order.find({ user: id });
+//   //   console.log(this.orders);
+//   this.populate({
+//     path: "library",
+//     select: ["products"],
+//     populate: { path: "products", model: "Product" },
+//   });
+//   this.populate({
+//     path: "wishlist",
+//     select: ["products"],
+//     populate: { path: "products", model: "Product" },
+//   });
+//   this.populate({
+//     path: "cart",
+//     select: ["products"],
+//     populate: { path: "products", model: "Product" },
+//   });
+//   //   this.populate("orders");
+//   this.populate({
+//     path: "orders",
+//     select: ["products", "totalPrice", "createdAt"],
+//     populate: { path: "products", model: "Product" },
+//   });
+// });
 
 // userSchema.pre("find", async function () {
 //   // this.populate('library');
