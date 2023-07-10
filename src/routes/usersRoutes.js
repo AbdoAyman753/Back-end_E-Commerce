@@ -27,7 +27,7 @@ const { validateReg, validateLogin } = require('../utils/validation');
 router.get('/', verifyToken, getAllUsers);
 
 // getting user by id
-router.get('/:id', verifyToken, getUserById);
+router.get('/user-info', verifyToken, getUserById);
 
 // create a new user (register)
 router.post('/', validateReg, register);
