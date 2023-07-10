@@ -15,11 +15,11 @@ const getAllUsers = async (req, res, next) => {
 };
 
 const getUserById = async (req, res, next) => {
-  const { id } = req.params;
-  const user = await User.findById(id);
+  const { user } = req;
   // console.log(user);
   if (!user) return next(new AppError("User Not Found!", 404));
-  // user.orders = Order.find({ user: user._id});
+  // populate User before sending response
+  await postFindUser(user);
   res.send(user);
 };
 
@@ -159,12 +159,35 @@ const login = async (req, res, next) => {
     { id: user._id, role: user.role },
     process.env.ENCRYPTION_KEY
   );
-  // user.orders = [{_id:'64916a0c08962c2104bd4058'}];
-  // user.orders.push( await Order.find({ user: user._id}) );
+  // remove password from response
   user.password = undefined;
+  // populate User before sending response
+  await postFindUser(user);
   res.send({ message: "user logged in successfully!", user, token });
 };
-
+const postFindUser = async (user)=>{
+  await user.populate({
+    path: "library",
+    select: ["products"],
+    populate: { path: "products", model: "Product" },
+  });
+  await user.populate({
+    path: "wishlist",
+    select: ["products"],
+    populate: { path: "products", model: "Product" },
+  });
+  await user.populate({
+    path: "cart",
+    select: ["products"],
+    populate: { path: "products", model: "Product" },
+  });
+  //   this.populate("orders");
+  await user.populate({
+    path: "orders",
+    select: ["products", "totalPrice", "createdAt"],
+    populate: { path: "products", model: "Product" },
+  });
+}
 module.exports = {
   getAllUsers,
   getUserById,
