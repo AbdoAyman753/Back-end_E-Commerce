@@ -14,6 +14,7 @@ const {
   deleteProduct,
   newestProducts,
   expensiveProducts,
+  productImgsCount,
 } = require('../controllers/productsControllers');
 const { multerUploads } = require('../utils/multer');
 const { cloudinaryConfig } = require('../utils/config/cloudinaryConfig');
@@ -30,7 +31,7 @@ router.get('/expensive', expensiveProducts);
 // get Product by Product_id
 router.get('/:id', getProductById);
 
-// create a new Product
+// create a new Product ( Only Admin Can )
 router.post(
   '/',
   verifyToken,
@@ -45,7 +46,7 @@ router.patch(
   '/:id',
   verifyToken,
   isAdmin,
-  multerUploads.array('product_images', 8),
+  multerUploads.array('product_images', productImgsCount),
   cloudinaryConfig,
   updateProduct
 );

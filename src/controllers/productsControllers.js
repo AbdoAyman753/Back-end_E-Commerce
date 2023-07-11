@@ -2,6 +2,7 @@ const Product = require('../models/Product');
 const AppError = require('../utils/AppError');
 const { uploader } = require('../utils/config/cloudinaryConfig');
 const { dataUri } = require('../utils/multer');
+const productImgsCount = 8;
 
 function refineStrings(string) {
   // removing special characters
@@ -14,7 +15,7 @@ function refineStrings(string) {
 }
 
 const getAllProducts = async (req, res, next) => {
-  const Products = await Product.find().sort({created_at: -1});
+  const Products = await Product.find().sort({ created_at: -1 });
   const categoryList = Product.schema.path('category').enumValues;
   res.send({ Products, categoryList });
 };
@@ -43,7 +44,7 @@ const getProductById = async (req, res, next) => {
 const createProduct = async (req, res, next) => {
   const { product_name, price, vendor, category, description } = req.body;
   // 1- recive product_images from the req and send it to multer middleware
-  // 2- multer send me arr of objects for every image as a req.files
+  // 2- multer send me arr of objects as a req.files
   // 3- extract every image and uploade it to cloudinary using dataUri() and uploader.upload()
   // 4- return array of [...images url] as a uploadedImages
 
@@ -71,7 +72,10 @@ const createProduct = async (req, res, next) => {
     uploadedImages = await Promise.all(uploadPromises);
   } else {
     return next(
-      new AppError('Must Provide 1 to 8 Images That Descripe The Product', 400)
+      new AppError(
+        `Must Provide 1 to ${productImgsCount} Images That Descripe The Product`,
+        400
+      )
     );
   }
 
@@ -94,24 +98,23 @@ const createProduct = async (req, res, next) => {
 // The Logic Below Is Designed For The Patch HTTP Method Only.
 const updateProduct = async (req, res, next) => {
   const product_id = req.params.id;
-  const {
-    product_name,
-    price,
-    vendor,
-    category,
-    description,
-    reviews,
-    old_images,
-  } = req.body;
+  const { product_name, price, vendor, category, description, reviews } =
+    req.body;
+  let old_images = [];
+  req.body.old_images?.length
+    ? (old_images = JSON.parse(req.body.old_images))
+    : null;
 
   const product = await Product.findById(product_id);
   if (!product)
-    return next(new AppError('Product With The Provided Id Not Found 🤷‍♀️', 400));
+    return next(new AppError('Product With The Provided Id Not Found 🤷‍♀️', 404));
 
   let uploadedImages = [];
+
   if (req.files) {
     const uploadPromises = req.files.map(async (file) => {
       const buffImage = dataUri(file);
+
       try {
         const uploadedImage = await uploader.upload(buffImage.content, {
           public_id: file.originalname,
@@ -123,18 +126,26 @@ const updateProduct = async (req, res, next) => {
       } catch (err) {
         return next(
           new AppError(
-            `failed to upload image to Cloudnary error is ${err}`,
+            `failed to upload image to Cloudnary, error is ${err}`,
             500
           )
         );
       }
     });
-
     // To Await All the Upload Promises To Ensures That All Images are Uploaded Before Proceeding.
     uploadedImages = await Promise.all(uploadPromises);
   }
 
   let updatedImgsLinks;
+
+  if (uploadedImages.length + old_images.length > productImgsCount) {
+    return next(
+      new AppError(
+        `Total Product Images Count can't be More Than ${productImgsCount} images`,
+        400
+      )
+    );
+  }
 
   if (uploadedImages.length && old_images.length) {
     updatedImgsLinks = [...old_images, ...uploadedImages];
@@ -159,6 +170,7 @@ const updateProduct = async (req, res, next) => {
     },
     { new: true }
   );
+
   res.send({
     message: 'Product updated successfully!',
     Product: editedProduct,
@@ -169,7 +181,7 @@ const deleteProduct = async (req, res, next) => {
   const product_id = req.params.id;
   const product = await Product.findById(product_id);
   if (!product)
-    return next(new AppError('Product With The Provided Id Not Found 🤷‍♀️', 400));
+    return next(new AppError('Product With The Provided Id Not Found 🤷‍♀️', 404));
 
   const deletedProduct = await Product.findByIdAndDelete(product_id);
 
@@ -187,4 +199,5 @@ module.exports = {
   createProduct,
   updateProduct,
   deleteProduct,
+  productImgsCount,
 };
