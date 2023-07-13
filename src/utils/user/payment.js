@@ -7,8 +7,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 exports.createCheckoutSession = async (req, res) => {
   const { cart, totalPrice } = req.body;
-  // console.log(req.user.email);
-  // console.log(req.user.id);
+
   const cartIds = cart.map((item) => {
     return {
       _id: item._id,
@@ -27,10 +26,9 @@ exports.createCheckoutSession = async (req, res) => {
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
-    success_url: "http://localhost:5173/payment-success",
+    success_url: "http://localhost:5173/",
     cancel_url: "http://localhost:5173/",
-    // customer_email: req.user.email,
-    // client_reference_id: req.user.id,
+
     customer: customer.id,
     line_items: cart.map((item) => {
       return {
@@ -90,25 +88,16 @@ exports.webhookCheckout = async (req, res, next) => {
     });
     await newOrder.save();
 
-    // const newLibrary = new Library({ products: gamesIds, user: user_id });
-    // await newLibrary.save();
-    // { $push: { tags: ['javascript'] } }
     await Library.findOneAndUpdate(
       { user: user_id },
       { $push: { products: gamesIds } }
     );
-    // const cart = await Cart.findOneAndUpdate(
-    //   { user: user_id },
-    //   { $set: { products: [] } }
-    // );
+
     const cart = await Cart.findOneAndUpdate(
       { user: user_id },
       { products: [] },
       { new: true }
     );
-    console.log(cart);
-    // const cart = await Cart.findOne({ user: user_id });
-    // library.products.push(...gamesIds);
   }
   res.status(200).json({ received: true });
 };
