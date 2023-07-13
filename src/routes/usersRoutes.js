@@ -21,7 +21,7 @@ const {
   login,
 } = require('../controllers/userController');
 
-const { validateReg, validateLogin } = require('../utils/validation');
+const { validateReg, validateLogin, validateChangePass } = require('../utils/validation');
 
 // getting all users
 router.get('/', verifyToken, getAllUsers);
@@ -44,7 +44,7 @@ router.patch(
   cloudinaryConfig,
   uploadUserPic
 );
-router.patch('/:id/changePassword', verifyToken, changePassword);
+router.patch('/:id/changePassword', verifyToken, validateChangePass, changePassword);
 router.patch('/changeRole', verifyToken, isAdmin, updateRole);
 // delete user
 router.delete('/:id', verifyToken, isAdmin, deleteUser);
