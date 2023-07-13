@@ -21,8 +21,8 @@ const loginSchema = Joi.object({
 });
 
 const changePassSchema = Joi.object({
-    password: Joi.string().min(8).required(),
-    repeat_password: Joi.ref('password'),
+    newPassword: Joi.string().min(8).required(),
+    confirmPassword: Joi.ref('newPassword'),
 });
 
 const validateReg = async (req, res, next) => {
@@ -47,8 +47,8 @@ const validateLogin = async (req, res, next) => {
 };
 
 const validateChangePass = async (req, res, next) => {
-    const { password, repeat_password } = req.body;
-    const {error} = changePassSchema.validate({  password, repeat_password });
+    const { newPassword, confirmPassword } = req.body;
+    const {error} = changePassSchema.validate({ newPassword, confirmPassword });
     if(error){
         return next(new AppError(error?.message, 400,error?.details));
     }
