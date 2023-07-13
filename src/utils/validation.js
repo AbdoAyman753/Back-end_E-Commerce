@@ -20,16 +20,24 @@ const loginSchema = Joi.object({
     password: Joi.string().min(8).required()  
 });
 
+const changePassSchema = Joi.object({
+    password: Joi.string().min(8).required(),
+    repeat_password: Joi.ref('password'),
+});
+
 const validateReg = async (req, res, next) => {
+    req.body.email = req.body.email.toLowerCase();
     const { user_name, email, password, repeat_password } = req.body;
     const {error} = regSchema.validate({ user_name, email, password, repeat_password });
     if(error){
         return next(new AppError(error?.message, 400,error?.details));
     }
+    
     next();
 };
 
 const validateLogin = async (req, res, next) => {
+    req.body.email = req.body.email.toLowerCase();
     const { email, password } = req.body;
     const {error} = loginSchema.validate({  email, password });
     if(error){
@@ -38,5 +46,13 @@ const validateLogin = async (req, res, next) => {
     next();
 };
 
-module.exports = {validateReg, validateLogin};
+const validateChangePass = async (req, res, next) => {
+    const { password, repeat_password } = req.body;
+    const {error} = changePassSchema.validate({  password, repeat_password });
+    if(error){
+        return next(new AppError(error?.message, 400,error?.details));
+    }
+    next();
+};
+module.exports = { validateReg, validateLogin, validateChangePass };
   
