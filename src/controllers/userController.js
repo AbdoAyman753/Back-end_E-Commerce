@@ -130,7 +130,7 @@ const changePassword = async (req, res, next) => {
     { password: await bcrypt.hash(newPassword, +process.env.HASHING_COST) },
     { new: true }
   );
-  res.send({ message: "Password updated successfully!", editedUser });
+  res.send({ message: "Password updated successfully!"});
 };
 
 const deleteUser = async (req, res, next) => {
