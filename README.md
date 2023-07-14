@@ -38,7 +38,7 @@ This is an Express REST API project developed using NodeJs and MongoDB.
   "header" : {
     "authorization" : --token--
     }
-  }```
+  }
 
 ### Get user data with token
 - #### GET /users/user-info
