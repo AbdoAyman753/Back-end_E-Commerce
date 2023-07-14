@@ -2,7 +2,7 @@ const express = require("express");
 const Wishlist = require("../models/Wishlist");
 const AppError = require("../utils/AppError");
 const verifyToken = require("../utils/verifyToken");
-
+// ـــــــــــــــــــــــــــــــــــــ Check Id user and Admin ــــــــــــــــــــــــــــــ
 const checkId = async (req, res, next) => {
   const wishlist = await Wishlist.findById(req.params.id);
   if (!wishlist)
@@ -25,43 +25,38 @@ const checkId = async (req, res, next) => {
   }
 };
 
+// ــــــــــــــــــــــــــــــــــــــــ Get User Wishlist ____________________________________
 const getUserWishlist = async (req, res) => {
   const wishlist = await Wishlist.find({ user: req.user._id });
   res.status(200).send(wishlist);
 };
 
+//ـــــــــــــــــــــــــــــــــــــــ Get Wishlist By Id ــــــــــــــــــــــــــــــــ
 const getOnewishlist = async (req, res) => {
   const wishlist = await Wishlist.findById(req.params.id);
   res.status(200).send(wishlist);
 };
 
+// ـــــــــــــــــــــــــــــــــــ Update the Wishilst ــــــــــــــــــــــــــــــــــ
 const updateWishlist = async (req, res, next) => {
   const { products } = req.body;
   if (!products) return next(new AppError("No Updates Values Found", 404));
   const wishlist = await Wishlist.findOne({ user: req.user._id });
-  // const wishlist = await Wishlist.findById(req.wishlist._id);
-  // sameProduct = wishlist.products.filter((prod) => prod === products);
-  // if (sameProduct) {
-  //   return res
-  //     .status(409)
-  //     .json({ message: "The Product Already exist in the Wishlist" });
-  // }
-
-  // wishlist.products.push(products);
-  // console.log(products);
   await Wishlist.findByIdAndUpdate(wishlist._id, {
     products,
   });
   res.status(201).send(`Wishlist With Id ${wishlist._id} Has Been updated`);
 };
 
+//ـــــــــــــــــــــــــــــــ Empty The Wishlist ـــــــــــــــــــــــــــــــــــــــ
 const emptyWishlist = async (req, res) => {
-  // console.log(req.wishlist);
   await Wishlist.findByIdAndUpdate(req.wishlist._id, { products: [] });
   res
     .status(200)
     .send(`Wishlist with Id=${req.wishlist._id} has been deleted Successfully`);
 };
+
+// ــــــــــــــــــــــــــــــ Create Wishlist ـــــــــــــــــــــــــــــــــــــــــــــ
 const createWishlist = async (req, res, next) => {
   const { products } = req.body;
   if (!products)
@@ -79,6 +74,7 @@ const createWishlist = async (req, res, next) => {
     .json({ message: "Wishlist has been Created", data: newWishlist });
 };
 
+// ـــــــــــــــــــــــــــــــــ Remove Wishlist Item ــــــــــــــــــــــــــــــــــــــ
 const removeWishlistItem = async (req, res, next) => {
   const { wishlist } = req;
   const { product } = req.body;
@@ -86,7 +82,6 @@ const removeWishlistItem = async (req, res, next) => {
   const newWishlist = wishlist.products.filter(
     (prod) => prod.toString() !== product
   );
-  // console.log(newWishlist);
   await Wishlist.findByIdAndUpdate(wishlist._id, {
     products: newWishlist,
   });

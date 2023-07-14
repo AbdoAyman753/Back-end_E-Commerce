@@ -2,6 +2,7 @@ const express = require("express");
 const Library = require("../models/Library");
 const AppError = require("../utils/AppError");
 
+//ــــــــــــــــــــــــــــــــــ Check Id And User ـــــــــــــــــــــــــــــــــــــــــــ
 const checkId = async (req, res, next) => {
   const library = await Library.findById(req.params.id);
   if (!library)
@@ -21,16 +22,19 @@ const checkId = async (req, res, next) => {
   }
 };
 
+// ـــــــــــــــــــــــــــــــــــــ Get All The Libraries ــــــــــــــــــــــــــــــــــــ
 const getAllLibraries = async (req, res, next) => {
   const libraries = await Library.find();
   if (!libraries) return next(new AppError(`No Purchase Histories Found`, 404));
   res.status(200).send(libraries);
 };
 
+// ــــــــــــــــــــــــــــــــــــــ Get The  Lirary By Id ـــــــــــــــــــــــــــــــــــــ
 const getOneLibrary = async (req, res) => {
   res.status(200).send(req.Library);
 };
 
+// ــــــــــــــــــــــــــــــــــــــــ Create library ــــــــــــــــــــــــــــــــــــــــــــــ
 const createLibrary = async (req, res, next) => {
   const { products } = req.body;
   if (!products)
@@ -45,7 +49,7 @@ const createLibrary = async (req, res, next) => {
 
   res.status(201).send(newLibrary);
 };
-
+//ـــــــــــــــــــــــــــــــــــــــــ Update The Library By Id  ـــــــــــــــــــــــــــــــــــــ
 const updateLibrary = async (req, res, next) => {
   const { products } = req.body;
   if (!products) return next(new AppError("No Updates Values Found", 400));
@@ -59,7 +63,7 @@ const updateLibrary = async (req, res, next) => {
     .status(201)
     .send(`The Purchase List With Id ${req.library._id} Has Been updated`);
 };
-
+//ــــــــــــــــــــــــــــــــــــــــــ Update The User Library ــــــــــــــــــــــــــــــــــــــــــ
 const updateUserLibrary = async (req, res, next) => {
   const { products } = req.body;
   if (!products) return next(new AppError("No Updates Values Found", 400));
@@ -73,12 +77,15 @@ const updateUserLibrary = async (req, res, next) => {
     .send(`The Purchase List With Id ${newLibrary._id} Has Been updated`);
 };
 
+//ــــــــــــــــــــــــــــــــــــــــــ Delete The Library By Id ــــــــــــــــــــــــــــــــــــــــــ
 const deleteLibrary = async (req, res) => {
   await Library.findByIdAndDelete(req.library._id);
   res
     .status(200)
     .send(`Library with Id=${req.library._id} has been deleted Successfully`);
 };
+
+//ـــــــــــــــــــــــــــــــــــــــ Get The User Library ــــــــــــــــــــــــــــــــــــــــــــــــ
 
 const getUserLibrary = async (req, res) => {
   const library = await Library.findOne({ user: req.user._id });
