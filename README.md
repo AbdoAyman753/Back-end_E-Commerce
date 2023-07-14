@@ -35,8 +35,8 @@ This is an Express REST API project developed using NodeJs and MongoDB.
 ### Get all users
 - #### GET /users/
 - ``` "req":{
-  "headers":{
-    authorization: --token--
+  "header" : {
+    "authorization" : --token--
     }
   }```
 
