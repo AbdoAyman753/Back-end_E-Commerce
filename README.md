@@ -24,9 +24,9 @@ This is an Express REST API project developed using NodeJs and MongoDB.
 
 ## Getting Started with project
 - Clone to your local machine.
-- NPM install dependacies.
+- npm install dependacies.
 - Create .env file and add environment varibles.
-- NPM start.
+- npm start.
 
 ## API Endpoints:
 
