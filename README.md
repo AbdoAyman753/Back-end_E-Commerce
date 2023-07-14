@@ -34,7 +34,8 @@ This is an Express REST API project developed using NodeJs and MongoDB.
 
 ### Get all users
 - #### GET /users/
-- ``` "req":{
+- ```
+  "req":{
   "header" : {
     "authorization" : --token--
     }
@@ -42,7 +43,8 @@ This is an Express REST API project developed using NodeJs and MongoDB.
   
 ### Get user data with token
 - #### GET /users/user-info
-- ``` "req":{
+- ```
+  "req":{
   "header" : {
     "authorization" : --token--
     }
@@ -50,7 +52,8 @@ This is an Express REST API project developed using NodeJs and MongoDB.
 
 ### Create new user
 - #### POST /users/
-- ``` "req":{
+- ```
+  "req":{
   "body" : {
     "email" : "ahmed100@gmail.com",
     "user_name" : "Ahmed",
@@ -61,13 +64,15 @@ This is an Express REST API project developed using NodeJs and MongoDB.
 
 ### Login to site, get token
 - #### POST /users/login
-- ``` "req":{
+- ```
+  "req":{
   "body" : {
     "email" : "ahmed100@gmail.com",
     "password" : "Ah123456789",
     }
   }
-- ``` "res":{
+- ```
+  "res":{
   "body" : {
     "message": "user logged in successfully!",
     "user": {
@@ -88,12 +93,14 @@ This is an Express REST API project developed using NodeJs and MongoDB.
 
 ### Update user data
 - #### PATCH /users/:id
-- ``` "req":{
+- ```
+  "req":{
   "header" : {
     "authorization" : --token--
     }
   }
-- ``` "res":{
+- ```
+  "res":{
   "body" : {
     "message" : "user updated successfully"
     }
@@ -101,12 +108,14 @@ This is an Express REST API project developed using NodeJs and MongoDB.
 
 ### Upload user profile picture
 - #### PATCH /users/:id/profile_pic
-- ``` "req":{
+- ```
+  "req":{
   "header" : {
     "authorization" : --token--
     }
   }
-- ``` "res":{
+- ```
+  "res":{
   "body" : {
     "message" : "user updated successfully"
     }
@@ -114,7 +123,8 @@ This is an Express REST API project developed using NodeJs and MongoDB.
 
 ### Change user password
 - #### PATCH /users/:id/changePassword
-- ``` "req":{
+- ```
+  "req":{
   "header" : {
     "authorization" : --token--
     }
@@ -124,7 +134,8 @@ This is an Express REST API project developed using NodeJs and MongoDB.
       "confirmPassword" : "Ah123456"
     }
   }
-- ``` "res":{
+- ```
+  "res":{
   "body" : {
     "message" : "user updated successfully"
     }
@@ -132,12 +143,14 @@ This is an Express REST API project developed using NodeJs and MongoDB.
 
 ### Change user role, used by admin only
 - #### PATCH /users/changeRole
-- ``` "req":{
+- ```
+  "req":{
   "header" : {
     "authorization" : --token--
     }
   }
-- ``` "res":{
+- ```
+  "res":{
   "body" : {
     "message" : "user updated successfully"
     }
