@@ -32,13 +32,13 @@ This is an Express REST API project developed using NodeJs and MongoDB.
 
 ## Users
 
-### - Get all users
+### Get all users
 #### GET /users/
 
-### - Get user data with token
+- ### Get user data with token
 #### GET /users/user-info
 
-### Login to site, get token
+- ### Login to site, get token
 #### POST /users/login
 
 ### Create new user
