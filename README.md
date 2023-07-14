@@ -155,3 +155,119 @@ This is an Express REST API project developed using NodeJs and MongoDB.
     "message" : "user updated successfully"
     }
   }
+  
+## Cart
+
+### Get user's cart
+- #### GET /carts/myCart
+- ```
+  "req":{
+  "header" : {
+    "authorization" : --token--
+    }
+  }
+  
+### Create new cart for user at user creation
+- #### POST /carts/new
+
+### Update cart items
+- #### PATCH /carts/updateCart
+- ```
+  "req":{
+  "header" : {
+    "authorization" : --token--
+    }
+    "body" : {
+      products: [items here]
+    }
+  }
+
+### Empty cart
+- #### PATCH /carts/emptyCart
+- ```
+  "req":{
+  "header" : {
+    "authorization" : --token--
+    }
+    "body" : {
+      products: [empty array]
+    }
+  }
+
+## Library
+
+### Get user's library
+- #### GET /libraries/
+- ```
+  "req":{
+  "header" : {
+    "authorization" : --token--
+    }
+  }
+
+### Create user's library at user creation
+- #### POST /libraries/
+
+### Uppdate user's library
+- #### PATCH /libraries/
+- ```
+  "req":{
+  "header" : {
+    "authorization" : --token--
+    }
+    "body" : {
+      products: [items here]
+    }
+  }
+
+## Order
+
+### Get user's orders
+- #### GET /orderss/:id
+- ```
+  "req":{
+  "header" : {
+    "authorization" : --token--
+    }
+  }
+
+### Create user's order
+- #### POST /orders/
+
+### Uppdate user's order
+- #### PATCH /orders/:id
+- ```
+  "req":{
+  "header" : {
+    "authorization" : --token--
+    }
+    "body" : {
+      products: [items here]
+    }
+  }
+
+## WishList
+
+### Get user's wishlist
+- #### GET /wishlists/:id
+- ```
+  "req":{
+  "header" : {
+    "authorization" : --token--
+    }
+  }
+
+### Create user's wishlist at user creation
+- #### POST /wishlists/:id
+
+### Uppdate user's wishlist
+- #### PATCH /wishlists/:id
+- ```
+  "req":{
+  "header" : {
+    "authorization" : --token--
+    }
+    "body" : {
+      products: [items here]
+    }
+  }
