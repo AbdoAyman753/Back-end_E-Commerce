@@ -20,12 +20,12 @@ This is an Express REST API project developed using NodeJs and MongoDB.
 - bcrypt: Password hashing.
 - Stripe: Payment handling.
 - JWT: Token generation.
-- DotEnv: Envirnoment variables.
+- DotEnv: Environment variables.
 
 ## Getting Started with project
 - Clone to your local machine.
 - NPM install dependacies.
-- Create .env file and add envirnoment varibles.
+- Create .env file and add environment varibles.
 - NPM start.
 
 ## API Endpoints:
