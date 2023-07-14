@@ -30,12 +30,12 @@ This is an Express REST API project developed using NodeJs and MongoDB.
 
 ## APIc Endpoints:
 
-### Users
+## Users
 
-### Get all users
+### - Get all users
 #### GET /users/
 
-### Get user data with token
+### - Get user data with token
 #### GET /users/user-info
 
 ### Login to site, get token
