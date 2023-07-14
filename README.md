@@ -33,25 +33,25 @@ This is an Express REST API project developed using NodeJs and MongoDB.
 ## Users
 
 ### Get all users
-#### GET /users/
+- #### GET /users/
 
-- ### Get user data with token
-#### GET /users/user-info
+### Get user data with token
+- #### GET /users/user-info
 
-- ### Login to site, get token
-#### POST /users/login
+### Login to site, get token
+- #### POST /users/login
 
 ### Create new user
-#### POST /users/
+- #### POST /users/
 
 ### Update user data
-#### PATCH /users/:id
+- #### PATCH /users/:id
 
 ### Upload user profile picture
-#### PATCH /users/:id/profile_pic
+- #### PATCH /users/:id/profile_pic
 
 ### Change user password
-#### PATCH /users/:id/changePassword
+- #### PATCH /users/:id/changePassword
 
 ### Change user role, used by admin only
-#### PATCH /users/changeRole
+- #### PATCH /users/changeRole
