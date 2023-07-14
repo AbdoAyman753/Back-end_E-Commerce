@@ -39,24 +39,106 @@ This is an Express REST API project developed using NodeJs and MongoDB.
     "authorization" : --token--
     }
   }
-
+  
 ### Get user data with token
 - #### GET /users/user-info
-
-### Login to site, get token
-- #### POST /users/login
+- ``` "req":{
+  "header" : {
+    "authorization" : --token--
+    }
+  }
 
 ### Create new user
 - #### POST /users/
+- ``` "req":{
+  "body" : {
+    "email" : "ahmed100@gmail.com",
+    "user_name" : "Ahmed",
+    "password" : "Ah123456789",
+    "repeat_password": "Ah123456789"
+    }
+  }
+
+### Login to site, get token
+- #### POST /users/login
+- ``` "req":{
+  "body" : {
+    "email" : "ahmed100@gmail.com",
+    "password" : "Ah123456789",
+    }
+  }
+- ``` "res":{
+  "body" : {
+    "message": "user logged in successfully!",
+    "user": {
+        "_id": "64a54d1b505f84baf547a6a1",
+        "user_name": "Ahmed",
+        "email": "ahmed100@gmail.com",
+        "role": "user",
+        "profile_pic": "http://res.cloudinary.com/ddkkalgoh/image/upload/v1689198316/profile_pics/user-5.png.png",
+        "balance": 0,
+        "created_at": "2023-07-05T10:38:54.522Z",
+        "__v": 0,
+        "orders": [],
+        "library": [],
+        "wishlist": [],
+        "orders": [],
+        "cart": []
+  }
 
 ### Update user data
 - #### PATCH /users/:id
+- ``` "req":{
+  "header" : {
+    "authorization" : --token--
+    }
+  }
+- ``` "res":{
+  "body" : {
+    "message" : "user updated successfully"
+    }
+  }
 
 ### Upload user profile picture
 - #### PATCH /users/:id/profile_pic
+- ``` "req":{
+  "header" : {
+    "authorization" : --token--
+    }
+  }
+- ``` "res":{
+  "body" : {
+    "message" : "user updated successfully"
+    }
+  }
 
 ### Change user password
 - #### PATCH /users/:id/changePassword
+- ``` "req":{
+  "header" : {
+    "authorization" : --token--
+    }
+  "body": {
+      "currentPassword" : "Ah123456789",
+      "newPassword" : "Ah123456",
+      "confirmPassword" : "Ah123456"
+    }
+  }
+- ``` "res":{
+  "body" : {
+    "message" : "user updated successfully"
+    }
+  }
 
 ### Change user role, used by admin only
 - #### PATCH /users/changeRole
+- ``` "req":{
+  "header" : {
+    "authorization" : --token--
+    }
+  }
+- ``` "res":{
+  "body" : {
+    "message" : "user updated successfully"
+    }
+  }
