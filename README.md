@@ -28,7 +28,7 @@ This is an Express REST API project developed using NodeJs and MongoDB.
 - Create .env file and add envirnoment varibles.
 - NPM start.
 
-## APIc Endpoints:
+## API Endpoints:
 
 ## Users
 
